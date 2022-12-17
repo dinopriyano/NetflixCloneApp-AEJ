@@ -27,6 +27,9 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+        <activity
+            android:name=".DetailActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
