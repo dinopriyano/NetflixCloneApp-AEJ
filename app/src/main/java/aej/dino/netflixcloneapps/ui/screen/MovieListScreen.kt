@@ -17,7 +17,8 @@ import androidx.compose.ui.unit.dp
 fun MovieListScreen(paddingValues: PaddingValues, movies: List<Movie>) {
     LazyColumn(
         modifier = Modifier.padding(paddingValues),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        contentPadding = PaddingValues(vertical = 16.dp)
     ) {
         items(movies) { movie ->
             MovieItem(

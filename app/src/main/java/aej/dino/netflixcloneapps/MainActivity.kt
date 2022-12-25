@@ -1,20 +1,25 @@
 package aej.dino.netflixcloneapps
 
-import aej.dino.netflixcloneapps.data.MovieDatasource
-import aej.dino.netflixcloneapps.domain.model.Movie
+import aej.dino.netflixcloneapps.ui.MovieViewModel
 import aej.dino.netflixcloneapps.ui.component.MovieAppBar
+import aej.dino.netflixcloneapps.ui.component.MovieSearchField
 import aej.dino.netflixcloneapps.ui.screen.MovieGridScreen
 import aej.dino.netflixcloneapps.ui.screen.MovieListScreen
 import aej.dino.netflixcloneapps.ui.theme.NetflixCloneAppsTheme
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 @ExperimentalMaterial3Api
 class MainActivity : ComponentActivity() {
@@ -30,17 +35,36 @@ class MainActivity : ComponentActivity() {
 
 @ExperimentalMaterial3Api
 @Composable
-fun NetflixCloneApps() {
-    val movies: List<Movie> by rememberSaveable {
-        mutableStateOf(MovieDatasource.getNowPlayingMovie())
-    }
+fun NetflixCloneApps(
+  viewModel: MovieViewModel = viewModel(factory = MovieViewModel.Factory)
+) {
+    val movies by viewModel.movies.observeAsState(arrayListOf())
+
+    val factory = MovieViewModel.Factory
+
     var isGrid by remember { mutableStateOf(false) }
+    var keyword by remember { mutableStateOf("") }
+
+    LaunchedEffect(keyword) {
+      viewModel.getMovies(keyword)
+    }
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            MovieAppBar(
-                onViewChange = { isGrid = it }
-            )
+            Column(modifier = Modifier.fillMaxWidth()) {
+              MovieAppBar(onViewChange = { isGrid = it })
+              MovieSearchField(
+                keyword,
+                onTextChange = {
+                  keyword = it
+                },
+                Modifier
+                  .fillMaxWidth()
+                  .padding(vertical = 8.dp)
+                  .padding(horizontal = 16.dp)
+              )
+            }
         }
     ) { contentPadding ->
         if (isGrid) MovieGridScreen(contentPadding, movies)

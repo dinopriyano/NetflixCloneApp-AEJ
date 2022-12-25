@@ -21,7 +21,8 @@ fun MovieGridScreen(
     LazyVerticalGrid(
         modifier = Modifier.padding(paddingValues),
         columns = GridCells.Fixed(2),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        contentPadding = PaddingValues(vertical = 16.dp)
     ) {
         items(movies) { movie ->
             MovieItem(
