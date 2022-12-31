@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -36,34 +35,31 @@ class MainActivity : ComponentActivity() {
 @ExperimentalMaterial3Api
 @Composable
 fun NetflixCloneApps(
-  viewModel: MovieViewModel = viewModel(factory = MovieViewModel.Factory)
+    viewModel: MovieViewModel = viewModel(factory = MovieViewModel.Factory)
 ) {
-    val movies by viewModel.movies.observeAsState(arrayListOf())
-
-    val factory = MovieViewModel.Factory
+    val movies by viewModel.movies.collectAsState()
 
     var isGrid by remember { mutableStateOf(false) }
     var keyword by remember { mutableStateOf("") }
 
-    LaunchedEffect(keyword) {
-      viewModel.getMovies(keyword)
-    }
+    LaunchedEffect("") { viewModel.getMovies() }
+    LaunchedEffect(keyword) { viewModel.searchMovie(keyword) }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             Column(modifier = Modifier.fillMaxWidth()) {
-              MovieAppBar(onViewChange = { isGrid = it })
-              MovieSearchField(
-                keyword,
-                onTextChange = {
-                  keyword = it
-                },
-                Modifier
-                  .fillMaxWidth()
-                  .padding(vertical = 8.dp)
-                  .padding(horizontal = 16.dp)
-              )
+                MovieAppBar(onViewChange = { isGrid = it })
+                MovieSearchField(
+                    keyword,
+                    onTextChange = {
+                        keyword = it
+                    },
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp)
+                        .padding(horizontal = 16.dp)
+                )
             }
         }
     ) { contentPadding ->

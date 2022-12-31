@@ -1,35 +1,44 @@
 package aej.dino.netflixcloneapps.ui
 
-import aej.dino.netflixcloneapps.data.MovieDatasource
+import aej.dino.netflixcloneapps.MovieApplication
+import aej.dino.netflixcloneapps.data.MovieRepository
 import aej.dino.netflixcloneapps.domain.model.Movie
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 class MovieViewModel constructor(
-  private val dataSource: MovieDatasource
-): ViewModel() {
+    private val movieRepository: MovieRepository
+) : ViewModel() {
 
-  private val _movies = MutableLiveData<List<Movie>>()
-  val movies: LiveData<List<Movie>> get() = _movies
+    private val _movies = MutableStateFlow(emptyList<Movie>())
+    val movies: StateFlow<List<Movie>> get() = _movies
 
-  companion object {
-    val Factory: ViewModelProvider.Factory = viewModelFactory {
-      initializer {
-        MovieViewModel(
-          MovieDatasource
-        )
-      }
+    companion object {
+        val Factory: ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                val application = (this[APPLICATION_KEY] as MovieApplication)
+                MovieViewModel(application.appMovieContainer.movieRepository)
+            }
+        }
     }
-  }
-  
-  fun getMovies(keyword: String) {
-    _movies.value = dataSource.getNowPlayingMovie().filter { movie ->  
-      movie.title.contains(keyword, true) || movie.description.contains(keyword, true)
+
+    fun getMovies() {
+        viewModelScope.launch {
+            movieRepository.getNowPlayingMovie().collect { _movies.value = it }
+        }
     }
-  }
+
+    fun searchMovie(keyword: String) {
+        _movies.value = movies.value.filter { movie ->
+            movie.title.contains(keyword, true) || movie.description.contains(keyword, true)
+        }
+    }
 
 }

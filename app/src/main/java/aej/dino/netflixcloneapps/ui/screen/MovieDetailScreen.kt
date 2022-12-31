@@ -3,7 +3,6 @@ package aej.dino.netflixcloneapps.ui.screen
 import aej.dino.netflixcloneapps.data.MovieDatasource
 import aej.dino.netflixcloneapps.domain.model.Movie
 import aej.dino.netflixcloneapps.ui.component.MovieAppBar
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,7 +21,7 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,6 +29,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,7 +48,7 @@ fun MovieDetailScreen(
                 .background(Color.Black)
         ) {
             val (backdropRef, topBarRef, ratingRef, buttonRef, overviewRef) = createRefs()
-            Image(
+            AsyncImage(
                 modifier = Modifier
                     .fillMaxWidth()
                     .constrainAs(backdropRef) {
@@ -58,7 +59,10 @@ fun MovieDetailScreen(
                         height = Dimension.fillToConstraints
                     }
                     .drawWithCache { createVerticalGradient(0, 5f) },
-                painter = painterResource(id = movie.backdropResourceId),
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(movie.backdropResourceId)
+                    .crossfade(true)
+                    .build(),
                 contentDescription = "",
                 contentScale = ContentScale.Crop
             )
@@ -130,7 +134,7 @@ private fun ContentOverView(modifier: Modifier = Modifier, movie: Movie) {
             text = "Overview",
             style = TextStyle(color = Color.White, fontWeight = FontWeight.Bold)
         )
-        Image(
+        AsyncImage(
             modifier = Modifier
                 .clip(RoundedCornerShape(8.dp))
                 .constrainAs(imageRef) {
@@ -139,7 +143,10 @@ private fun ContentOverView(modifier: Modifier = Modifier, movie: Movie) {
                     width = Dimension.ratio("2:3")
                     height = Dimension.value(150.dp)
                 },
-            painter = painterResource(id = movie.posterResourceId),
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(movie.posterResourceId)
+                .crossfade(true)
+                .build(),
             contentDescription = ""
         )
 
