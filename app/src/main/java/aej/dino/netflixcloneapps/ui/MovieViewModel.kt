@@ -19,6 +19,7 @@ class MovieViewModel constructor(
 
     private val _movies = MutableStateFlow(emptyList<Movie>())
     val movies: StateFlow<List<Movie>> get() = _movies
+    private val currentMovie = mutableListOf<Movie>()
 
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
@@ -31,12 +32,16 @@ class MovieViewModel constructor(
 
     fun getMovies() {
         viewModelScope.launch {
-            movieRepository.getNowPlayingMovie().collect { _movies.value = it }
+            movieRepository.getNowPlayingMovie().collect {
+                currentMovie.clear()
+                currentMovie.addAll(it)
+                _movies.value = currentMovie
+            }
         }
     }
 
     fun searchMovie(keyword: String) {
-        _movies.value = movies.value.filter { movie ->
+        _movies.value = currentMovie.filter { movie ->
             movie.title.contains(keyword, true) || movie.description.contains(keyword, true)
         }
     }
