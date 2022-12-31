@@ -40,8 +40,6 @@ fun NetflixCloneApps(
 ) {
     val movies by viewModel.movies.observeAsState(arrayListOf())
 
-    val factory = MovieViewModel.Factory
-
     var isGrid by remember { mutableStateOf(false) }
     var keyword by remember { mutableStateOf("") }
 
