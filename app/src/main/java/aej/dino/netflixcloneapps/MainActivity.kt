@@ -8,13 +8,16 @@ import aej.dino.netflixcloneapps.ui.screen.detail.MovieDetailScreen
 import aej.dino.netflixcloneapps.ui.screen.home.HomeScreen
 import aej.dino.netflixcloneapps.ui.theme.NetflixCloneAppsTheme
 import android.os.Bundle
+import android.os.Handler
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -23,8 +26,17 @@ import androidx.navigation.navArgument
 
 @ExperimentalMaterial3Api
 class MainActivity : ComponentActivity() {
+
+    //     private var viewModel: MainViewModel  =
+    private val viewModel: MainViewModel by viewModels { MainViewModel.Factory }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        installSplashScreen().apply {
+            setKeepOnScreenCondition {
+                viewModel.isSplash.value
+            }
+        }
         setContent {
             NetflixCloneAppsTheme { // A surface container using the 'background' color from the theme
                 NetflixCloneApps()
@@ -47,7 +59,10 @@ fun NetflixCloneApps(
     }
 
     isLoggedIn?.let {
-        NavHost(navController = navController, startDestination = if(it) Routers.HOME else Routers.LOGIN) {
+        NavHost(
+            navController = navController,
+            startDestination = if (it) Routers.HOME else Routers.LOGIN
+        ) {
 
             composable(
                 route = Routers.LOGIN
