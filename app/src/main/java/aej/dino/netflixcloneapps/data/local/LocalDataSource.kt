@@ -3,6 +3,8 @@ package aej.dino.netflixcloneapps.data.local
 import aej.dino.netflixcloneapps.data.local.datastore.MovieDataStore
 import aej.dino.netflixcloneapps.data.local.room.dao.UserDao
 import aej.dino.netflixcloneapps.data.local.room.entity.toUser
+import aej.dino.netflixcloneapps.domain.model.User
+import aej.dino.netflixcloneapps.domain.model.toUserEntity
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
@@ -25,7 +27,24 @@ class LocalDataSource constructor(
       }
     )
   }.catch {
-    Log.d("LocalDataSource", "loginUser: failed =${it.message}")
+    Log.e("LocalDataSource", "loginUser: failed =${it.message}")
   }.flowOn(Dispatchers.IO)
+
+  suspend fun registerUser(user: User) = flow {
+    userDao.storeUser(user.toUserEntity())
+    emit(user)
+  }.catch {
+    Log.e("LocalDataSource", "registerUser: failed=${it.message}")
+  }.flowOn(Dispatchers.IO)
+
+  suspend fun isLoggedIn() = flow {
+    movieDataStore.email.collect {
+      emit(it.isNotEmpty())
+    }
+  }.catch {
+    Log.e("LocalDataSource", "isLoggedIn: failed=${it.message}")
+  }.flowOn(Dispatchers.IO)
+
+  suspend fun storeEmail(email: String) = movieDataStore.storeData(MovieDataStore.EMAIL, email)
 
 }

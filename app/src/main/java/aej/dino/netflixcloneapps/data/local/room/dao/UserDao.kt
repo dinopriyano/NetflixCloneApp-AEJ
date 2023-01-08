@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 interface UserDao {
 
   @Query("SELECT * FROM user WHERE email = :email AND password = :password")
-  suspend fun getUserByEmailAndPassword(email: String, password: String): Flow<List<UserEntity>>
+  fun getUserByEmailAndPassword(email: String, password: String): Flow<List<UserEntity>>
 
   @Insert
   suspend fun storeUser(userEntity: UserEntity)
