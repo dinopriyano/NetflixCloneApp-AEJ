@@ -8,4 +8,5 @@
     <string name="not_have_account">"Belum punya akun? "</string>
     <string name="register">Register</string>
     <string name="have_account">"Sudah punya akun? "</string>
+    <string name="register_new_account">Register New Account</string>
 </resources>

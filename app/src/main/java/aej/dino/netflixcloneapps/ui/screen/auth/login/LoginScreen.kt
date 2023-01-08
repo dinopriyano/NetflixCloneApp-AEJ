@@ -4,27 +4,39 @@ import aej.dino.netflixcloneapps.R
 import aej.dino.netflixcloneapps.ui.Routers
 import aej.dino.netflixcloneapps.ui.component.MovieAppBar
 import aej.dino.netflixcloneapps.ui.screen.auth.AuthViewModel
+import aej.dino.netflixcloneapps.ui.theme.Gray
 import aej.dino.netflixcloneapps.ui.theme.NetflixCloneAppsTheme
+import aej.dino.netflixcloneapps.ui.theme.Placeholder
 import aej.dino.netflixcloneapps.ui.theme.RedNetflix
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -44,6 +56,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -74,22 +87,24 @@ import androidx.navigation.compose.rememberNavController
     Column(
       modifier = Modifier
         .fillMaxSize()
-        .padding(contentPadding),
+        .padding(contentPadding)
+        .background(Color.Black),
+      verticalArrangement = Arrangement.Center
     ) {
-      Spacer(modifier = Modifier.weight(1f))
-      OutlinedTextField(
+      TextField(
         modifier = Modifier
           .fillMaxWidth()
           .padding(horizontal = 16.dp),
         value = email,
         onValueChange = { email = it },
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-          containerColor = MaterialTheme.colorScheme.surface,
-          unfocusedBorderColor = Color.LightGray,
-          focusedBorderColor = MaterialTheme.colorScheme.onSurface
+        colors = TextFieldDefaults.textFieldColors(
+          containerColor = Gray,
+          focusedIndicatorColor = Color.Transparent,
+          unfocusedIndicatorColor = Color.Transparent,
+          textColor = Color.White
         ),
         label = {
-          Text(text = stringResource(R.string.email))
+          Text(text = stringResource(R.string.email), color = Placeholder)
         },
         keyboardOptions = KeyboardOptions(
           keyboardType = KeyboardType.Email
@@ -97,19 +112,21 @@ import androidx.navigation.compose.rememberNavController
         shape = RoundedCornerShape(16.dp)
       )
 
-      OutlinedTextField(modifier = Modifier
+      TextField(modifier = Modifier
         .fillMaxWidth()
-        .padding(horizontal = 16.dp),
+        .padding(horizontal = 16.dp)
+        .padding(top = 16.dp),
         visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
         value = password,
         onValueChange = { password = it },
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-          containerColor = MaterialTheme.colorScheme.surface,
-          unfocusedBorderColor = Color.LightGray,
-          focusedBorderColor = MaterialTheme.colorScheme.onSurface
+        colors = TextFieldDefaults.textFieldColors(
+          containerColor = Gray,
+          focusedIndicatorColor = Color.Transparent,
+          unfocusedIndicatorColor = Color.Transparent,
+          textColor = Color.White
         ),
         label = {
-          Text(text = stringResource(R.string.password))
+          Text(text = stringResource(R.string.password), color = Placeholder)
         },
         keyboardOptions = KeyboardOptions(
           keyboardType = KeyboardType.Password
@@ -121,13 +138,22 @@ import androidx.navigation.compose.rememberNavController
           IconButton(onClick = {
             passwordVisible = !passwordVisible
           }) {
-            Icon(imageVector = image, contentDescription = null)
+            Icon(imageVector = image, contentDescription = null, tint = Placeholder)
           }
         },
         shape = RoundedCornerShape(16.dp)
       )
 
-      Button(
+      OutlinedButton(
+        colors = ButtonDefaults.buttonColors(
+          containerColor = Color.Transparent,
+        ),
+        shape = RoundedCornerShape(16.dp),
+        contentPadding = PaddingValues(vertical = 16.dp),
+        border = BorderStroke(
+          width = 1.dp,
+          color = Placeholder
+        ),
         onClick = {
                   viewModel.login(email, password)
         },
@@ -139,29 +165,20 @@ import androidx.navigation.compose.rememberNavController
         Text(text = stringResource(R.string.login))
       }
 
-      Spacer(modifier = Modifier.weight(1f))
-
-      ClickableText(
+      TextButton(
         modifier = Modifier
           .fillMaxWidth()
           .padding(horizontal = 16.dp)
-          .padding(bottom = 32.dp),
-        text = buildAnnotatedString {
-          withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.onSurface)) {
-            append(stringResource(R.string.not_have_account))
-          }
-          withStyle(style = SpanStyle(color = RedNetflix, fontWeight = FontWeight.SemiBold)) {
-            append(stringResource(R.string.register))
-          }
-        },
-        style = TextStyle.Default.copy(
-          textAlign = TextAlign.Center
+          .padding(top = 64.dp),
+        colors = ButtonDefaults.textButtonColors(
+          contentColor = Placeholder
         ),
         onClick = {
           navHostController.navigate(Routers.REGISTER)
         }
-      )
-
+      ) {
+        Text(text = stringResource(id = R.string.register_new_account).uppercase())
+      }
     }
   }
 

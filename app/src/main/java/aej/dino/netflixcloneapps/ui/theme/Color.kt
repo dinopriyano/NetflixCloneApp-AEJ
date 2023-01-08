@@ -11,3 +11,5 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 val RedNetflix = Color(0xFFE50914)
+val Gray = Color(0xFF2b2b2b)
+val Placeholder = Color(0xFFCECECE)

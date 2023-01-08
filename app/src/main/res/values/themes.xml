@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.NetflixCloneApps" parent="android:Theme.Material.Light.NoActionBar" />
-
+    <style name="Theme.NetflixCloneApps" parent="android:Theme.Material.Light.NoActionBar"/>
 
     <style name="Theme.MySplash" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/black</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_netflix</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/netflix_icon</item>
         <item name="postSplashScreenTheme">@style/Theme.NetflixCloneApps</item>
         <item name="windowSplashScreenAnimationDuration">2000</item>
     </style>
