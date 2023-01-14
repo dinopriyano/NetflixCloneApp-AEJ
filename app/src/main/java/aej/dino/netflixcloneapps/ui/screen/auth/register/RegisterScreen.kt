@@ -1,32 +1,25 @@
 package aej.dino.netflixcloneapps.ui.screen.auth.register
 
 import aej.dino.netflixcloneapps.R
-import aej.dino.netflixcloneapps.ui.Routers
+import aej.dino.netflixcloneapps.ui.component.GhostButton
 import aej.dino.netflixcloneapps.ui.component.MovieAppBar
+import aej.dino.netflixcloneapps.ui.component.OutlineButton
+import aej.dino.netflixcloneapps.ui.component.TextFieldBirthDate
+import aej.dino.netflixcloneapps.ui.component.TextFieldDropdown
+import aej.dino.netflixcloneapps.ui.component.TextFieldEmail
+import aej.dino.netflixcloneapps.ui.component.TextFieldPassword
+import aej.dino.netflixcloneapps.ui.component.TextFieldUsername
 import aej.dino.netflixcloneapps.ui.screen.auth.AuthViewModel
 import aej.dino.netflixcloneapps.ui.theme.NetflixCloneAppsTheme
-import aej.dino.netflixcloneapps.ui.theme.RedNetflix
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.ClickableText
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -37,138 +30,81 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 
-@ExperimentalMaterial3Api @Composable fun RegisterScreen(
-  navHostController: NavHostController,
-  viewModel: AuthViewModel = androidx.lifecycle.viewmodel.compose.viewModel(factory = AuthViewModel.Factory)
+@ExperimentalMaterial3Api
+@Composable
+fun RegisterScreen(
+    navHostController: NavHostController,
+    viewModel: AuthViewModel = androidx.lifecycle.viewmodel.compose.viewModel(factory = AuthViewModel.Factory)
 ) {
 
-  var email by rememberSaveable { mutableStateOf("") }
-  var password by rememberSaveable { mutableStateOf("") }
-  var passwordVisible by rememberSaveable { mutableStateOf(false) }
+    var email by rememberSaveable { mutableStateOf("") }
+    var password by rememberSaveable { mutableStateOf("") }
+    var username by rememberSaveable { mutableStateOf("") }
+    var date by rememberSaveable { mutableStateOf("") }
+    var gender by rememberSaveable { mutableStateOf("") }
+    val listOfGender = listOf("Male", "Female")
 
-  val userRegisterResponse by viewModel.userRegister.collectAsState()
+    val userRegisterResponse by viewModel.userRegister.collectAsState()
 
-  LaunchedEffect(userRegisterResponse) {
-    userRegisterResponse?.let {
-      navHostController.popBackStack()
-    }
-  }
-
-  Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
-    MovieAppBar()
-  }) { contentPadding ->
-    Column(
-      modifier = Modifier
-        .fillMaxSize()
-        .padding(contentPadding),
-    ) {
-      Spacer(modifier = Modifier.weight(1f))
-      OutlinedTextField(
-        modifier = Modifier
-          .fillMaxWidth()
-          .padding(horizontal = 16.dp),
-        value = email,
-        onValueChange = { email = it },
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-          containerColor = MaterialTheme.colorScheme.surface,
-          unfocusedBorderColor = Color.LightGray,
-          focusedBorderColor = MaterialTheme.colorScheme.onSurface
-        ),
-        label = {
-          Text(text = stringResource(R.string.email))
-        },
-        keyboardOptions = KeyboardOptions(
-          keyboardType = KeyboardType.Email
-        ),
-        shape = RoundedCornerShape(16.dp)
-      )
-
-      OutlinedTextField(modifier = Modifier
-        .fillMaxWidth()
-        .padding(horizontal = 16.dp),
-        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-        value = password,
-        onValueChange = { password = it },
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-          containerColor = MaterialTheme.colorScheme.surface,
-          unfocusedBorderColor = Color.LightGray,
-          focusedBorderColor = MaterialTheme.colorScheme.onSurface
-        ),
-        label = {
-          Text(text = stringResource(R.string.password))
-        },
-        keyboardOptions = KeyboardOptions(
-          keyboardType = KeyboardType.Password
-        ),
-        trailingIcon = {
-          val image = if (passwordVisible) Icons.Filled.Visibility
-          else Icons.Filled.VisibilityOff
-
-          IconButton(onClick = {
-            passwordVisible = !passwordVisible
-          }) {
-            Icon(imageVector = image, contentDescription = null)
-          }
-        },
-        shape = RoundedCornerShape(16.dp)
-      )
-
-      Button(
-        onClick = {
-                  viewModel.register(email, password)
-        },
-        modifier = Modifier
-          .fillMaxWidth()
-          .padding(horizontal = 16.dp)
-          .padding(top = 32.dp)
-      ) {
-        Text(text = stringResource(R.string.register))
-      }
-
-      Spacer(modifier = Modifier.weight(1f))
-
-      ClickableText(
-        modifier = Modifier
-          .fillMaxWidth()
-          .padding(horizontal = 16.dp)
-          .padding(bottom = 32.dp),
-        text = buildAnnotatedString {
-          withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.onSurface)) {
-            append(stringResource(R.string.have_account))
-          }
-          withStyle(style = SpanStyle(color = RedNetflix, fontWeight = FontWeight.SemiBold)) {
-            append(stringResource(R.string.login))
-          }
-        },
-        style = TextStyle.Default.copy(
-          textAlign = TextAlign.Center
-        ),
-        onClick = {
-          navHostController.popBackStack()
+    LaunchedEffect(userRegisterResponse) {
+        userRegisterResponse?.let {
+            navHostController.popBackStack()
         }
-      )
-
     }
-  }
+
+    Scaffold(
+        modifier = Modifier
+            .background(Color.Black)
+            .padding(horizontal = 16.dp)
+            .fillMaxSize(),
+        topBar = {
+            MovieAppBar()
+        },
+    ) { contentPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black)
+                .padding(contentPadding),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            Spacer(modifier = Modifier.weight(1f))
+            TextFieldEmail(email = email, onValueChange = { email = it })
+            TextFieldPassword(password = password, onValueChange = { password = it })
+            TextFieldUsername(username = username, onValueChange = { username = it })
+            TextFieldBirthDate(date = date, onValueChange = { date = it })
+            TextFieldDropdown(
+                text = gender,
+                label = "Gender",
+                itemsDropdown = listOfGender,
+                onValueChange = { gender = it }
+            )
+            
+            Spacer(modifier = Modifier.height(16.dp))
+
+            OutlineButton(text = stringResource(R.string.register).uppercase()) {
+                viewModel.register(email, password)
+            }
+
+            GhostButton(text = stringResource(R.string.have_account).uppercase()) {
+                navHostController.popBackStack()
+            }
+            Spacer(modifier = Modifier.weight(1f))
+        }
+    }
 
 }
 
-@ExperimentalMaterial3Api @Preview(showBackground = true) @Composable fun LoginScreenPreview() {
-  NetflixCloneAppsTheme {
-    RegisterScreen(navHostController = rememberNavController())
-  }
+@ExperimentalMaterial3Api
+@Preview(showBackground = true)
+@Composable
+fun LoginScreenPreview() {
+    NetflixCloneAppsTheme {
+        RegisterScreen(navHostController = rememberNavController())
+    }
 }

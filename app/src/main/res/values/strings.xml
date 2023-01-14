@@ -3,10 +3,12 @@
     <string name="movie_image">Movie Image</string>
     <string name="app_bar_image">App Bar Image</string>
     <string name="email">Email</string>
+    <string name="username">Username</string>
     <string name="password">Password</string>
+    <string name="birthdate">Birthdate</string>
     <string name="login">Login</string>
     <string name="not_have_account">"Belum punya akun? "</string>
     <string name="register">Register</string>
-    <string name="have_account">"Sudah punya akun? "</string>
+    <string name="have_account">Already Have An Account</string>
     <string name="register_new_account">Register New Account</string>
 </resources>

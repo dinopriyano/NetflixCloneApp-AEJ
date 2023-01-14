@@ -8,7 +8,6 @@ import aej.dino.netflixcloneapps.ui.screen.detail.MovieDetailScreen
 import aej.dino.netflixcloneapps.ui.screen.home.HomeScreen
 import aej.dino.netflixcloneapps.ui.theme.NetflixCloneAppsTheme
 import android.os.Bundle
-import android.os.Handler
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
