@@ -2,8 +2,14 @@ package aej.dino.netflixcloneapps.ui.screen.auth
 
 import aej.dino.netflixcloneapps.MovieApplication
 import aej.dino.netflixcloneapps.data.AuthRepository
+import aej.dino.netflixcloneapps.data.remote.Resource
+import aej.dino.netflixcloneapps.data.remote.request.LoginRequest
+import aej.dino.netflixcloneapps.data.remote.request.RegisterRequest
+import aej.dino.netflixcloneapps.data.remote.response.RegisterResponse
+import aej.dino.netflixcloneapps.data.remote.response.WebResponse
 import aej.dino.netflixcloneapps.domain.model.User
-import aej.dino.netflixcloneapps.ui.MainViewModel
+import aej.dino.netflixcloneapps.ui.screen.auth.login.LoginScreenState
+import aej.dino.netflixcloneapps.ui.screen.auth.register.RegisterScreenState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -17,11 +23,13 @@ class AuthViewModel(
   private val authRepository: AuthRepository
 ): ViewModel() {
 
-  private val _userLogin = MutableStateFlow<User?>(null)
-  val userLoin: StateFlow<User?> get() = _userLogin
+  val registerRequest = MutableStateFlow<RegisterRequest>(RegisterRequest())
 
-  private val _userRegister = MutableStateFlow<User?>(null)
-  val userRegister: StateFlow<User?> get() = _userRegister
+  private val _loginScreenState = MutableStateFlow<LoginScreenState>(LoginScreenState.Empty)
+  val loginScreenState: StateFlow<LoginScreenState> get() = _loginScreenState
+
+  private val _registerScreenState = MutableStateFlow<RegisterScreenState>(RegisterScreenState.Empty)
+  val registerScreenState: StateFlow<RegisterScreenState> get() = _registerScreenState
 
   companion object {
     val Factory: ViewModelProvider.Factory = viewModelFactory {
@@ -34,18 +42,33 @@ class AuthViewModel(
 
   fun login(email: String, password: String) {
     viewModelScope.launch {
-      authRepository.login(email, password).collect { users ->
-        if(users.isNotEmpty()) {
-          _userLogin.value = users[0]
+      authRepository.login(LoginRequest(password, email)).collect { result ->
+        when(result) {
+          is Resource.Success -> {
+            _loginScreenState.value = LoginScreenState.Success(result.data.data)
+          }
+          is Resource.Error -> {
+            _loginScreenState.value = LoginScreenState.Error(result.msg)
+          }
+          else -> Unit
         }
       }
     }
   }
 
-  fun register(email: String, password: String) {
+  fun register(request: RegisterRequest) {
     viewModelScope.launch {
-      authRepository.register(User(name = "", email = email, password = password)).collect { user ->
-        _userRegister.value = user
+      _registerScreenState.value = RegisterScreenState.Loading
+      authRepository.register(request).collect { result ->
+        when(result) {
+          is Resource.Success -> {
+            _registerScreenState.value = RegisterScreenState.Success(result.data.data)
+          }
+          is Resource.Error -> {
+            _registerScreenState.value = RegisterScreenState.Error(result.msg)
+          }
+          else -> Unit
+        }
       }
     }
   }

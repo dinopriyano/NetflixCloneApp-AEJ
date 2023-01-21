@@ -22,7 +22,7 @@ class DefaultAppMovieContainer(
     private val context: Context
 ) : AppMovieContainer {
 
-    private val BASE_URL = "https://api.themoviedb.org/3/"
+    private val BASE_URL = "http://54.236.81.227/api/"
 
     /**
      * Use the Retrofit builder to build a retrofit object using a kotlinx.serialization converter
@@ -57,6 +57,6 @@ class DefaultAppMovieContainer(
 
     override val localDataSource: LocalDataSource by lazy { LocalDataSource(movieDatabase.userDao(), dataStore) }
 
-    override val authRepository: AuthRepository by lazy { AuthRepository(localDataSource) }
+    override val authRepository: AuthRepository by lazy { AuthRepository(localDataSource, remoteDataSource) }
 
 }

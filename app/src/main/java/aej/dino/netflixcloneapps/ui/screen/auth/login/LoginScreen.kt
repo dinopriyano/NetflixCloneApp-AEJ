@@ -8,6 +8,7 @@ import aej.dino.netflixcloneapps.ui.component.OutlineButton
 import aej.dino.netflixcloneapps.ui.component.TextFieldEmail
 import aej.dino.netflixcloneapps.ui.component.TextFieldPassword
 import aej.dino.netflixcloneapps.ui.screen.auth.AuthViewModel
+import aej.dino.netflixcloneapps.ui.screen.auth.register.RegisterScreenState
 import aej.dino.netflixcloneapps.ui.theme.NetflixCloneAppsTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -41,12 +42,15 @@ fun LoginScreen(
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
 
-    val userLoginResponse by viewModel.userLoin.collectAsState()
+    val userLoginResponse by viewModel.loginScreenState.collectAsState()
 
     LaunchedEffect(userLoginResponse) {
-        userLoginResponse?.let { user ->
-            viewModel.storeEmail(user.email)
-            navHostController.navigate(Routers.HOME)
+        when(userLoginResponse) {
+            is LoginScreenState.Success -> {
+                viewModel.storeEmail((userLoginResponse as LoginScreenState.Success).user.user.email)
+                navHostController.navigate(Routers.HOME)
+            }
+            else -> Unit
         }
     }
 
