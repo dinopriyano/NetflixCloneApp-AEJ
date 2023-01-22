@@ -5,17 +5,17 @@ plugins {
     kotlin("kapt")
 }
 
-val compose_version = rootProject.extra["compose_version"] as String
 android {
     namespace = "aej.dino.netflixcloneapps"
-    compileSdk = 33
+    compileSdk = ConfigData.compileSdk
 
+    val appVersion = ConfigData.getAppVersion(file("version.properties"), gradle)
     defaultConfig {
         applicationId = "aej.dino.netflixcloneapps"
-        minSdk = 21
-        targetSdk = 33
-        versionCode = 1
-        versionName = "1.0"
+        minSdk = ConfigData.minSdk
+        targetSdk = ConfigData.targetSdk
+        versionCode = appVersion.first
+        versionName = appVersion.second
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -53,55 +53,10 @@ android {
 }
 
 dependencies {
-
-    val composeBom = platform("androidx.compose:compose-bom:2022.10.00")
-    implementation(composeBom)
-    androidTestImplementation(composeBom)
-
-    implementation("androidx.core:core-ktx:1.7.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.3.1")
-
-    implementation("androidx.activity:activity-compose")
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3")
-    implementation("androidx.compose.material:material")
-    implementation("androidx.compose.material:material-icons-core")
-    implementation("androidx.compose.material:material-icons-extended")
-    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
-
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1")
-    implementation("androidx.compose.runtime:runtime-livedata")
-
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.3")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
-
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
-
-    implementation("io.coil-kt:coil-compose:2.2.2")
-
-    // compose navigation
-    implementation("androidx.navigation:navigation-compose:2.5.3")
-
-    // retrofit
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.6")
-
-    // room
-    implementation("androidx.room:room-runtime:2.4.3")
-    kapt("androidx.room:room-compiler:2.4.3")
-    implementation("androidx.room:room-ktx:2.4.3")
-
-    // datastore preferences
-    implementation("androidx.datastore:datastore-preferences:1.0.0")
-
-    // splash-screen
-    implementation("androidx.core:core-splashscreen:1.0.0")
-
-    // system ui controller
-    implementation("com.google.accompanist:accompanist-systemuicontroller:0.28.0")
+    implementationPlatform(Dependencies.implementationPlatformLibraries)
+    implementation(Dependencies.implementationLibraries)
+    androidTestImplementation(Dependencies.androidTestImplementationLibraries)
+    testImplementation(Dependencies.testImplementationLibraries)
+    debugImplementation(Dependencies.debugImplementationLibraries)
+    kapt(Dependencies.kaptLibraries)
 }
