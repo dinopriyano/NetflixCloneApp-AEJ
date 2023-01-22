@@ -14,4 +14,5 @@ interface IAuthRepository {
   suspend fun register(registerRequest: RegisterRequest): Flow<Resource<WebResponse<RegisterResponse>>>
   suspend fun getIsLoggedIn(): Flow<Boolean>
   suspend fun storeEmail(email: String)
+  suspend fun storeToken(token: String)
 }

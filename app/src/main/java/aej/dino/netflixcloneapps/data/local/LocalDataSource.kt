@@ -14,37 +14,17 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
 class LocalDataSource constructor(
-  private val userDao: UserDao,
-  private val movieDataStore: MovieDataStore
+    private val userDao: UserDao,
+    private val movieDataStore: MovieDataStore
 ) {
 
-  suspend fun loginUser(email: String, password: String) = flow {
-    emitAll(
-      userDao.getUserByEmailAndPassword(email, password).map {
-        it.map {
-          it.toUser()
-        }
-      }
-    )
-  }.catch {
-    Log.e("LocalDataSource", "loginUser: failed =${it.message}")
-  }.flowOn(Dispatchers.IO)
+    suspend fun isLoggedIn() = flow {
+        movieDataStore.token.collect { emit(it.isNotEmpty()) }
+    }.catch {
+        Log.e("LocalDataSource", "isLoggedIn: failed=${it.message}")
+    }.flowOn(Dispatchers.IO)
 
-  suspend fun registerUser(user: User) = flow {
-    userDao.storeUser(user.toUserEntity())
-    emit(user)
-  }.catch {
-    Log.e("LocalDataSource", "registerUser: failed=${it.message}")
-  }.flowOn(Dispatchers.IO)
-
-  suspend fun isLoggedIn() = flow {
-    movieDataStore.email.collect {
-      emit(it.isNotEmpty())
-    }
-  }.catch {
-    Log.e("LocalDataSource", "isLoggedIn: failed=${it.message}")
-  }.flowOn(Dispatchers.IO)
-
-  suspend fun storeEmail(email: String) = movieDataStore.storeData(MovieDataStore.EMAIL, email)
+    suspend fun storeEmail(email: String) = movieDataStore.storeData(MovieDataStore.EMAIL, email)
+    suspend fun storeToken(token: String) = movieDataStore.storeData(MovieDataStore.TOKEN, token)
 
 }
