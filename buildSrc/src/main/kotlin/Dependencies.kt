@@ -48,14 +48,8 @@ object Dependencies {
   // system ui controller
   const val systemUiController = "com.google.accompanist:accompanist-systemuicontroller:${Versions.systemUiController}"
 
-
-  val kaptLibraries = listOf(
-    roomCompiler
-  )
-
-  val implementationLibraries = listOf(
-    coreKtx,
-    lifecycleRuntime,
+  // compose Library
+  val composeImplLibraries = listOf(
     activityCompose,
     composeUi,
     composeToolingPreview,
@@ -66,38 +60,70 @@ object Dependencies {
     composeConstraintLayout,
     viewModelCompose,
     runtimeLiveData,
-    coil,
     composeNavigation,
+  )
+
+  val composeAndroidTestImplLibraries = listOf(composeBom)
+
+  val composeDebugImplLibraries = listOf(
+    uiTooling,
+    testManifest
+  )
+
+  val composeImplPlatformLibraries = listOf(composeBom)
+
+  // common
+  val commonImplLibraries = listOf(
+    coreKtx,
+    lifecycleRuntime,
+    coil,
+    splashScreen,
+    systemUiController
+  )
+
+  val commonAndroidTestImplLibraries = listOf(
+    testJunit,
+    espressoCore,
+    junit4UiTest
+  )
+
+  val commonTestImplLibraries = listOf(
+    junit
+  )
+
+  // core
+
+  val kaptLibraries = listOf(
+    roomCompiler
+  )
+
+  val coreImplementationLibraries = listOf(
     retrofit,
     gson,
     interceptor,
     roomRuntime,
     roomKtx,
     dataStore,
-    splashScreen,
-    systemUiController
   )
 
-  val implementationPlatformLibraries = listOf(
-    composeBom
-  )
+}
 
-  val androidTestImplementationLibraries = listOf(
-    composeBom,
-    testJunit,
-    espressoCore,
-    junit4UiTest
-  )
+fun DependencyHandler.addComposeLibraries(){
+  implementationPlatform(Dependencies.composeImplPlatformLibraries)
+  implementation(Dependencies.composeImplLibraries)
+  androidTestImplementation(Dependencies.composeAndroidTestImplLibraries)
+  debugImplementation(Dependencies.composeDebugImplLibraries)
+}
 
-  val debugImplementationLibraries = listOf(
-    uiTooling,
-    testManifest
-  )
+fun DependencyHandler.addCommonLibraries(){
+  implementation(Dependencies.commonImplLibraries)
+  testImplementation(Dependencies.commonTestImplLibraries)
+  androidTestImplementation(Dependencies.commonAndroidTestImplLibraries)
+}
 
-  val testImplementationLibraries = listOf(
-    junit
-  )
-
+fun DependencyHandler.addCoreLibraries(){
+  implementation(Dependencies.coreImplementationLibraries)
+  kapt(Dependencies.kaptLibraries)
 }
 
 fun DependencyHandler.kapt(list: List<String>) {

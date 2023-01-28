@@ -1,9 +1,8 @@
 package aej.dino.netflixcloneapps.ui.screen.detail
 
 import aej.dino.netflixcloneapps.MovieApplication
-import aej.dino.netflixcloneapps.data.MovieRepository
-import aej.dino.netflixcloneapps.domain.model.Movie
-import aej.dino.netflixcloneapps.ui.MovieViewModel
+import aej.dino.netflixcloneapps.core.data.MovieRepository
+import aej.dino.netflixcloneapps.core.domain.model.Movie
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope

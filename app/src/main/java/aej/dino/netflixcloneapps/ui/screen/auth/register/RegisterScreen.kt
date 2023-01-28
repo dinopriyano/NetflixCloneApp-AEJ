@@ -1,7 +1,7 @@
 package aej.dino.netflixcloneapps.ui.screen.auth.register
 
 import aej.dino.netflixcloneapps.R
-import aej.dino.netflixcloneapps.data.remote.request.RegisterRequest
+import aej.dino.netflixcloneapps.core.data.remote.request.RegisterRequest
 import aej.dino.netflixcloneapps.ui.component.GhostButton
 import aej.dino.netflixcloneapps.ui.component.MovieAppBar
 import aej.dino.netflixcloneapps.ui.component.OutlineButton

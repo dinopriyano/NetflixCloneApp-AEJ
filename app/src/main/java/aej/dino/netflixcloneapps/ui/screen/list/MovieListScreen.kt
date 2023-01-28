@@ -1,6 +1,6 @@
 package aej.dino.netflixcloneapps.ui.screen.list
 
-import aej.dino.netflixcloneapps.domain.model.Movie
+import aej.dino.netflixcloneapps.core.domain.model.Movie
 import aej.dino.netflixcloneapps.ui.Routers
 import aej.dino.netflixcloneapps.ui.component.MovieItem
 import androidx.compose.foundation.layout.Arrangement

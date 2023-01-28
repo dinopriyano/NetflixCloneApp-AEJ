@@ -1,7 +1,7 @@
 package aej.dino.netflixcloneapps.ui
 
 import aej.dino.netflixcloneapps.MovieApplication
-import aej.dino.netflixcloneapps.data.AuthRepository
+import aej.dino.netflixcloneapps.core.domain.usecase.AuthUseCase
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class MainViewModel constructor(
-    private val authRepository: AuthRepository
+    private val authUseCase: AuthUseCase
 ) : ViewModel() {
 
     private val _isLoggedIn = MutableStateFlow<Boolean?>(null)
@@ -28,7 +28,7 @@ class MainViewModel constructor(
             initializer {
                 val application =
                     (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as MovieApplication)
-                MainViewModel(application.appMovieContainer.authRepository)
+                MainViewModel(application.appMovieContainer.authUseCase)
             }
         }
     }
@@ -46,7 +46,7 @@ class MainViewModel constructor(
 
     fun getIsLoggedInUser() {
         viewModelScope.launch {
-            authRepository.getIsLoggedIn().collect {
+            authUseCase.getIsLoggedIn().collect {
                 _isLoggedIn.value = it
             }
         }

@@ -1,7 +1,7 @@
 package aej.dino.netflixcloneapps
 
-import aej.dino.netflixcloneapps.data.AppMovieContainer
-import aej.dino.netflixcloneapps.data.DefaultAppMovieContainer
+import aej.dino.netflixcloneapps.core.data.AppMovieContainer
+import aej.dino.netflixcloneapps.core.data.DefaultAppMovieContainer
 import android.app.Application
 
 class MovieApplication : Application() {

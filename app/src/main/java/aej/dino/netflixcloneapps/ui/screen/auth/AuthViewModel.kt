@@ -1,13 +1,12 @@
 package aej.dino.netflixcloneapps.ui.screen.auth
 
 import aej.dino.netflixcloneapps.MovieApplication
-import aej.dino.netflixcloneapps.data.AuthRepository
-import aej.dino.netflixcloneapps.data.remote.Resource
-import aej.dino.netflixcloneapps.data.remote.request.LoginRequest
-import aej.dino.netflixcloneapps.data.remote.request.RegisterRequest
+import aej.dino.netflixcloneapps.core.data.AuthRepository
+import aej.dino.netflixcloneapps.core.data.remote.Resource
+import aej.dino.netflixcloneapps.core.data.remote.request.LoginRequest
+import aej.dino.netflixcloneapps.core.data.remote.request.RegisterRequest
 import aej.dino.netflixcloneapps.ui.screen.auth.login.LoginScreenState
 import aej.dino.netflixcloneapps.ui.screen.auth.register.RegisterScreenState
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope

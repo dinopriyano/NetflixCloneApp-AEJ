@@ -2,7 +2,6 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("kotlin-parcelize")
-    kotlin("kapt")
 }
 
 android {
@@ -53,10 +52,7 @@ android {
 }
 
 dependencies {
-    implementationPlatform(Dependencies.implementationPlatformLibraries)
-    implementation(Dependencies.implementationLibraries)
-    androidTestImplementation(Dependencies.androidTestImplementationLibraries)
-    testImplementation(Dependencies.testImplementationLibraries)
-    debugImplementation(Dependencies.debugImplementationLibraries)
-    kapt(Dependencies.kaptLibraries)
+    implementation(project(":Core"))
+    addCommonLibraries()
+    addComposeLibraries()
 }

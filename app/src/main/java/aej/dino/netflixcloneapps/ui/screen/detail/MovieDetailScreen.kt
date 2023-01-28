@@ -1,7 +1,7 @@
 package aej.dino.netflixcloneapps.ui.screen.detail
 
-import aej.dino.netflixcloneapps.data.MovieDatasource
-import aej.dino.netflixcloneapps.domain.model.Movie
+import aej.dino.netflixcloneapps.core.data.MovieDatasource
+import aej.dino.netflixcloneapps.core.domain.model.Movie
 import aej.dino.netflixcloneapps.ui.component.MovieAppBar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*

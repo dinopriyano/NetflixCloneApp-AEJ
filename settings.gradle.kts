@@ -14,3 +14,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Netflix Clone Apps"
 include (":app")
+include(":Core")
