@@ -4,8 +4,9 @@ import aej.dino.netflixcloneapps.ui.MainViewModel
 import aej.dino.netflixcloneapps.ui.Routers
 import aej.dino.netflixcloneapps.ui.screen.auth.login.LoginScreen
 import aej.dino.netflixcloneapps.ui.screen.auth.register.RegisterScreen
+import aej.dino.netflixcloneapps.ui.screen.dashboard.DashboardScreen
 import aej.dino.netflixcloneapps.ui.screen.detail.MovieDetailScreen
-import aej.dino.netflixcloneapps.ui.screen.home.HomeScreen
+import aej.dino.netflixcloneapps.ui.screen.dashboard.home.HomeScreen
 import aej.dino.netflixcloneapps.ui.theme.NetflixCloneAppsTheme
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -60,7 +61,7 @@ fun NetflixCloneApps(
     isLoggedIn?.let {
         NavHost(
             navController = navController,
-            startDestination = if (it) Routers.HOME else Routers.LOGIN
+            startDestination = if (it) Routers.DASHBOARD else Routers.LOGIN
         ) {
 
             composable(
@@ -79,6 +80,12 @@ fun NetflixCloneApps(
                 route = Routers.HOME
             ) {
                 HomeScreen(navController)
+            }
+
+            composable(
+                route = Routers.DASHBOARD
+            ) {
+                DashboardScreen(navController)
             }
 
             composable(

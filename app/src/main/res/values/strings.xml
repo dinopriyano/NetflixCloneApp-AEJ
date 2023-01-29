@@ -11,4 +11,9 @@
     <string name="register">Register</string>
     <string name="have_account">Already Have An Account</string>
     <string name="register_new_account">Register New Account</string>
+    <string name="try_again">Try Again</string>
+    <string name="something_error_title">Ups, something error</string>
+    <string name="now_playing">Now Playing</string>
+    <string name="popular">Popular</string>
+    <string name="upcoming">Upcoming</string>
 </resources>

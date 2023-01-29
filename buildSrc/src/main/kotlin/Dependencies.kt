@@ -104,6 +104,7 @@ object Dependencies {
     roomRuntime,
     roomKtx,
     dataStore,
+    viewModelCompose
   )
 
 }

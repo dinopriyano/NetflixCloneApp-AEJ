@@ -12,16 +12,23 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 
 class RemoteDataSource(
-    private val movieService: MovieService
+    private val movieService: MovieService,
+    private val movieTmdbService: MovieService,
 ): SafeApiCall {
     suspend fun getNowPlayingMovie() = flow {
-        movieService.getNowPlayingMovie().toListMovie().let { emit(it) }
-    }.catch {
-        Log.d("MovieRepository", "getNowPlayingMovie: failed = ${it.message}")
-    }.flowOn(Dispatchers.IO)
+        emit( safeApiCall { movieTmdbService.getNowPlayingMovie().toListMovie() } )
+    }
+
+    suspend fun getPopularMovie() = flow {
+        emit( safeApiCall { movieTmdbService.getPopularMovie().toListMovie() } )
+    }
+
+    suspend fun getUpcomingMovie() = flow {
+        emit( safeApiCall { movieTmdbService.getUpcomingMovie().toListMovie() } )
+    }
 
     suspend fun getMovieDetail(id: String) = flow {
-        movieService.getMovieDetail(id).toMovie().let { emit(it) }
+        movieTmdbService.getMovieDetail(id).toMovie().let { emit(it) }
     }.catch {
         Log.d("MovieRepository", "getMovieDetail: failed = ${it.message}")
     }.flowOn(Dispatchers.IO)

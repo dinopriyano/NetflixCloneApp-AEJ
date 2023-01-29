@@ -59,10 +59,10 @@ fun MovieResponse.toMovie() = Movie(
     this.overview ?: "",
     this.voteAverage?.toFloat() ?: 0f,
     this.backdropPath.let {
-        if (it == null || it.isBlank()) "" else "https://image.tmdb.org/t/p/original/$it"
+        if (it.isNullOrBlank()) "" else "https://image.tmdb.org/t/p/original/$it"
     },
     this.posterPath.let {
-        if (it == null || it.isBlank()) "" else "https://image.tmdb.org/t/p/w500/$it"
+        if (it.isNullOrBlank()) "" else "https://image.tmdb.org/t/p/w500/$it"
     },
 )
 

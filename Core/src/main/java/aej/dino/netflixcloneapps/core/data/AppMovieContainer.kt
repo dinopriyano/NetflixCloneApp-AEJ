@@ -27,6 +27,7 @@ class DefaultAppMovieContainer(
 ) : AppMovieContainer {
 
     private val BASE_URL = "http://54.236.81.227/api/"
+    private val BASE_URL_TMDB = "https://api.themoviedb.org/3/"
 
     /**
      * Use the Retrofit builder to build a retrofit object using a kotlinx.serialization converter
@@ -43,8 +44,18 @@ class DefaultAppMovieContainer(
         .client(provideRetrofitClient())
         .build()
 
+    private val retrofitTmdb: Retrofit = Retrofit.Builder()
+        .addConverterFactory(GsonConverterFactory.create())
+        .baseUrl(BASE_URL_TMDB)
+        .client(provideRetrofitClient())
+        .build()
+
     private val retrofitService: MovieService by lazy {
         retrofit.create(MovieService::class.java)
+    }
+
+    private val retrofitTmdbService: MovieService by lazy {
+        retrofitTmdb.create(MovieService::class.java)
     }
 
     private val movieDatabase: MovieDatabase by lazy {
@@ -55,7 +66,7 @@ class DefaultAppMovieContainer(
         MovieDataStore(context)
     }
 
-    override val remoteDataSource: RemoteDataSource by lazy { RemoteDataSource(retrofitService) }
+    override val remoteDataSource: RemoteDataSource by lazy { RemoteDataSource(retrofitService, retrofitTmdbService) }
 
     override val movieRepository: MovieRepository by lazy { MovieRepository(remoteDataSource) }
 

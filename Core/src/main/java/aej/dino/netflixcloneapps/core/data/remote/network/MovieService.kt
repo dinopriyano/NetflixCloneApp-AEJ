@@ -21,6 +21,18 @@ interface MovieService {
         @Query("language") language: String = "en-US"
     ): ListMovieResponse
 
+    @GET("movie/popular")
+    suspend fun getPopularMovie(
+        @Query("api_key") apiKey: String = "0a597bad68c0b95d5fab612cff9d8891",
+        @Query("language") language: String = "en-US"
+    ): ListMovieResponse
+
+    @GET("movie/upcoming")
+    suspend fun getUpcomingMovie(
+        @Query("api_key") apiKey: String = "0a597bad68c0b95d5fab612cff9d8891",
+        @Query("language") language: String = "en-US"
+    ): ListMovieResponse
+
     @GET("movie/{movieId}")
     suspend fun getMovieDetail(
         @Path("movieId") movieId: String,

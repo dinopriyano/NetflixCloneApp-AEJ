@@ -49,7 +49,7 @@ fun MovieItem(
                     .build(),
                 contentDescription = stringResource(R.string.movie_image),
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.height(220.dp)
+                modifier = Modifier.height(200.dp)
             )
             Text(
                 text = movie.rating.toString(),
