@@ -4,9 +4,15 @@ import aej.dino.netflixcloneapps.core.data.MovieDatasource
 import aej.dino.netflixcloneapps.core.domain.model.Movie
 import aej.dino.netflixcloneapps.ui.component.MovieAppBar
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.rounded.Favorite
+import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material3.*
@@ -14,6 +20,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.CacheDrawScope
@@ -41,13 +50,23 @@ import coil.request.ImageRequest
 fun MovieDetailScreen(
     movieId: String,
     navHostController: NavHostController,
-    viewModel: MovieDetailViewModel = androidx.lifecycle.viewmodel.compose.viewModel(factory = MovieDetailViewModel.Factory)
+    viewModel: MovieDetailViewModel = androidx.lifecycle.viewmodel.compose.viewModel(factory = MovieDetailViewModel.Factory),
 ) {
 
     val movie by viewModel.movie.collectAsState()
+    val isMovieFavorite by viewModel.isFavorite.collectAsState()
+    var isUpdateFavorite by remember { mutableStateOf(false) }
 
-    LaunchedEffect(movieId) {
+    // initialize
+    LaunchedEffect(Unit) {
         viewModel.getMovieDetail(movieId)
+        viewModel.isMovieFavorite(movieId)
+    }
+
+    // update in favorite
+    LaunchedEffect(isUpdateFavorite) {
+        viewModel.isMovieFavorite(movieId)
+        isUpdateFavorite = false
     }
 
     Scaffold(
@@ -91,26 +110,54 @@ fun MovieDetailScreen(
                     end.linkTo(parent.end)
                     start.linkTo(parent.start)
                 }, verticalAlignment = Alignment.CenterVertically) {
-                    Icon(imageVector = Icons.Rounded.Star, contentDescription = "", tint = Color.White)
+                    Icon(
+                        imageVector = Icons.Rounded.Star,
+                        contentDescription = "",
+                        tint = Color.White
+                    )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(text = "${movie.rating}", style = TextStyle(color = Color.White))
                 }
-                Button(
+                Row(
                     modifier = Modifier.constrainAs(buttonRef) {
                         top.linkTo(ratingRef.bottom, 16.dp)
                         end.linkTo(parent.end)
                         start.linkTo(parent.start)
                     },
-                    onClick = { },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.White)
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        imageVector = Icons.Rounded.PlayArrow,
-                        contentDescription = "",
-                        tint = Color.Black
-                    )
-                    Text(text = "Play", style = TextStyle(color = Color.Black))
+                    Button(
+                        onClick = { },
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.White)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.PlayArrow,
+                            contentDescription = "",
+                            tint = Color.Black
+                        )
+                        Text(text = "Play", style = TextStyle(color = Color.Black))
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Box(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(CircleShape)
+                            .background(Color.White)
+                            .clickable {
+                                if (isMovieFavorite) viewModel.removeFromFavorite(movie)
+                                else viewModel.addToFavorite(movie)
+                                isUpdateFavorite = true
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = if (isMovieFavorite) Icons.Rounded.Favorite else Icons.Rounded.FavoriteBorder,
+                            contentDescription = "",
+                            tint = Color.Black
+                        )
+                    }
                 }
+
                 ContentOverView(
                     modifier = Modifier.constrainAs(overviewRef) {
                         top.linkTo(buttonRef.bottom, 24.dp)

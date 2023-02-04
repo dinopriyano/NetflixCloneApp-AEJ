@@ -9,4 +9,9 @@ interface IMovieRepository {
     suspend fun getPopularMovie(): Flow<Resource<List<Movie>>>
     suspend fun getUpcomingMovie(): Flow<Resource<List<Movie>>>
     suspend fun getMovieDetail(id: String): Flow<Movie>
+
+    suspend fun getAllFavoriteMovie(): Flow<List<Movie>>
+    suspend fun isMovieFavorite(id: String): Flow<Boolean>
+    suspend fun addMovieToFavorite(movie: Movie): Flow<Boolean>
+    suspend fun removeMoveFromFavorite(movie: Movie): Flow<Boolean>
 }

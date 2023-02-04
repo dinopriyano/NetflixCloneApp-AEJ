@@ -6,10 +6,12 @@ import aej.dino.netflixcloneapps.core.data.remote.response.ListMovieResponse
 import aej.dino.netflixcloneapps.core.data.remote.response.LoginResponse
 import aej.dino.netflixcloneapps.core.data.remote.response.MovieResponse
 import aej.dino.netflixcloneapps.core.data.remote.response.RegisterResponse
+import aej.dino.netflixcloneapps.core.data.remote.response.UpdateResponse
 import aej.dino.netflixcloneapps.core.data.remote.response.WebResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -48,5 +50,10 @@ interface MovieService {
     suspend fun login(
         @Body login: LoginRequest
     ): WebResponse<LoginResponse>
+
+    @PUT("v1/user")
+    suspend fun updateUser(
+        @Body register: RegisterRequest
+    ): WebResponse<UpdateResponse>
 
 }

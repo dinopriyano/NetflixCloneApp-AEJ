@@ -12,6 +12,7 @@ interface IAuthInteractor {
     suspend fun login(loginRequest: LoginRequest): Flow<Resource<WebResponse<LoginResponse>>>
     suspend fun register(registerRequest: RegisterRequest): Flow<Resource<WebResponse<RegisterResponse>>>
     suspend fun getIsLoggedIn(): Flow<Boolean>
-    suspend fun storeEmail(email: String)
+    suspend fun getCurrentUsername(): Flow<String>
+    suspend fun storeUsername(email: String)
     suspend fun storeToken(token: String)
 }

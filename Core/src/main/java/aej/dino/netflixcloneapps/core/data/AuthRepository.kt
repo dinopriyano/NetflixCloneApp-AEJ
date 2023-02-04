@@ -29,8 +29,12 @@ class AuthRepository(
         return localDataSource.isLoggedIn()
     }
 
-    override suspend fun storeEmail(email: String) {
-        localDataSource.storeEmail(email)
+    override suspend fun getCurrentUsername(): Flow<String> {
+        return localDataSource.getCurrentUsername()
+    }
+
+    override suspend fun storeUsername(email: String) {
+        localDataSource.storeUsername(email)
     }
 
     override suspend fun storeToken(token: String) {

@@ -50,7 +50,10 @@ fun LoginScreen(
     LaunchedEffect(userLoginResponse) {
         when(userLoginResponse) {
             is LoginScreenState.Success -> {
-                viewModel.storeToken((userLoginResponse as LoginScreenState.Success).user.token)
+                (userLoginResponse as LoginScreenState.Success).user.let { user ->
+                    viewModel.storeToken(user.token)
+                    viewModel.storeUsername(user.user.username)
+                }
                 navHostController.navigate(Routers.HOME)
             }
             is LoginScreenState.Error -> {

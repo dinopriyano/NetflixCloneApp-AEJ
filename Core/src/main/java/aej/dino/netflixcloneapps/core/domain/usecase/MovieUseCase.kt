@@ -14,4 +14,9 @@ class MovieUseCase(
     override suspend fun getUpcomingMovie() = movieRepository.getUpcomingMovie()
 
     override suspend fun getMovieDetail(id: String) = movieRepository.getMovieDetail(id)
+    override suspend fun getAllFavoriteMovie() = movieRepository.getAllFavoriteMovie()
+    override suspend fun isMovieFavorite(id: String) = movieRepository.isMovieFavorite(id)
+
+    override suspend fun addMovieToFavorite(movie: Movie) = movieRepository.addMovieToFavorite(movie)
+    override suspend fun removeMoveFromFavorite(movie: Movie) = movieRepository.removeMoveFromFavorite(movie)
 }

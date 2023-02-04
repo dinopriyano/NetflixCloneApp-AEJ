@@ -14,6 +14,11 @@ data class LoginResponse(
 	val token: String
 )
 
+data class UpdateResponse(
+	@field:SerializedName("user")
+	val user: User,
+)
+
 data class User(
 
 	@field:SerializedName("birthdate")

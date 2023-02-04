@@ -68,9 +68,9 @@ class DefaultAppMovieContainer(
 
     override val remoteDataSource: RemoteDataSource by lazy { RemoteDataSource(retrofitService, retrofitTmdbService) }
 
-    override val movieRepository: MovieRepository by lazy { MovieRepository(remoteDataSource) }
-
     override val localDataSource: LocalDataSource by lazy { LocalDataSource(movieDatabase.userDao(), dataStore) }
+
+    override val movieRepository: MovieRepository by lazy { MovieRepository(remoteDataSource, localDataSource) }
 
     override val authRepository: AuthRepository by lazy { AuthRepository(localDataSource, remoteDataSource) }
 

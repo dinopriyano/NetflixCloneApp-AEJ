@@ -5,6 +5,7 @@ import aej.dino.netflixcloneapps.core.data.AuthRepository
 import aej.dino.netflixcloneapps.core.data.remote.Resource
 import aej.dino.netflixcloneapps.core.data.remote.request.LoginRequest
 import aej.dino.netflixcloneapps.core.data.remote.request.RegisterRequest
+import aej.dino.netflixcloneapps.core.domain.usecase.AuthUseCase
 import aej.dino.netflixcloneapps.ui.screen.auth.login.LoginScreenState
 import aej.dino.netflixcloneapps.ui.screen.auth.register.RegisterScreenState
 import androidx.lifecycle.ViewModel
@@ -17,7 +18,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class AuthViewModel(
-    private val authRepository: AuthRepository
+    private val authUseCase: AuthUseCase
 ) : ViewModel() {
 
     val registerRequest = MutableStateFlow<RegisterRequest>(RegisterRequest())
@@ -34,14 +35,14 @@ class AuthViewModel(
             initializer {
                 val application =
                     (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as MovieApplication)
-                AuthViewModel(application.appMovieContainer.authRepository)
+                AuthViewModel(application.appMovieContainer.authUseCase)
             }
         }
     }
 
     fun login(email: String, password: String) {
         viewModelScope.launch {
-            authRepository.login(LoginRequest(password, email)).collect { result ->
+            authUseCase.login(LoginRequest(password, email)).collect { result ->
                 when (result) {
                     is Resource.Success -> {
                         _loginScreenState.value = LoginScreenState.Success(result.data.data)
@@ -60,7 +61,7 @@ class AuthViewModel(
     fun register(request: RegisterRequest) {
         viewModelScope.launch {
             _registerScreenState.value = RegisterScreenState.Loading
-            authRepository.register(request).collect { result ->
+            authUseCase.register(request).collect { result ->
                 when (result) {
                     is Resource.Success -> {
                         _registerScreenState.value = RegisterScreenState.Success(result.data.data)
@@ -76,15 +77,15 @@ class AuthViewModel(
         }
     }
 
-    fun storeEmail(email: String) {
+    fun storeUsername(email: String) {
         viewModelScope.launch {
-            authRepository.storeEmail(email)
+            authUseCase.storeUsername(email)
         }
     }
 
     fun storeToken(token: String) {
         viewModelScope.launch {
-            authRepository.storeToken(token)
+            authUseCase.storeToken(token)
         }
     }
 

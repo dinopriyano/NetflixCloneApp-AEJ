@@ -1,6 +1,7 @@
 package aej.dino.netflixcloneapps.core.data.local.room
 
 import aej.dino.netflixcloneapps.core.data.local.room.dao.UserDao
+import aej.dino.netflixcloneapps.core.data.local.room.entity.FavoriteMovieEntity
 import aej.dino.netflixcloneapps.core.data.local.room.entity.UserEntity
 import android.content.Context
 import androidx.room.Database
@@ -8,8 +9,8 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 @Database(
-  entities = [UserEntity::class],
-  version = 1,
+  entities = [UserEntity::class, FavoriteMovieEntity::class],
+  version = 2,
   exportSchema = true
 )
 abstract class MovieDatabase: RoomDatabase() {
