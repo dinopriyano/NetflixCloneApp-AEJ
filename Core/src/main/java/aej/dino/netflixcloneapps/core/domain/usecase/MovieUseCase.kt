@@ -1,9 +1,7 @@
 package aej.dino.netflixcloneapps.core.domain.usecase
 
 import aej.dino.netflixcloneapps.core.data.MovieRepository
-import aej.dino.netflixcloneapps.core.data.remote.Resource
 import aej.dino.netflixcloneapps.core.domain.model.Movie
-import kotlinx.coroutines.flow.Flow
 
 class MovieUseCase(
     private val movieRepository: MovieRepository
@@ -14,6 +12,8 @@ class MovieUseCase(
     override suspend fun getUpcomingMovie() = movieRepository.getUpcomingMovie()
 
     override suspend fun getMovieDetail(id: String) = movieRepository.getMovieDetail(id)
+    override suspend fun getVideoFromMovie(id: String) = movieRepository.getVideoFromMovie(id)
+
     override suspend fun getAllFavoriteMovie() = movieRepository.getAllFavoriteMovie()
     override suspend fun isMovieFavorite(id: String) = movieRepository.isMovieFavorite(id)
 

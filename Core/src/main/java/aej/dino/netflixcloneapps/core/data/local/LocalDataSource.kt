@@ -8,7 +8,6 @@ import aej.dino.netflixcloneapps.core.domain.model.Movie
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 
@@ -22,6 +21,8 @@ class LocalDataSource constructor(
     }.catch {
         Log.e("LocalDataSource", "isLoggedIn: failed=${it.message}")
     }.flowOn(Dispatchers.IO)
+
+    suspend fun logout() = movieDataStore.clear()
 
     suspend fun getCurrentUsername() = flow {
         movieDataStore.username.collect{ emit(it) }

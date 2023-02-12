@@ -48,6 +48,9 @@ object Dependencies {
   // system ui controller
   const val systemUiController = "com.google.accompanist:accompanist-systemuicontroller:${Versions.systemUiController}"
 
+  // android youtube player
+  const val androidYoutubePlayer = "com.pierfrancescosoffritti.androidyoutubeplayer:core:${Versions.androidYoutubePlayer}"
+
   // compose Library
   val composeImplLibraries = listOf(
     activityCompose,
@@ -61,6 +64,7 @@ object Dependencies {
     viewModelCompose,
     runtimeLiveData,
     composeNavigation,
+    androidYoutubePlayer
   )
 
   val composeAndroidTestImplLibraries = listOf(composeBom)

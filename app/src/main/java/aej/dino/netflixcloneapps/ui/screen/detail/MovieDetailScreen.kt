@@ -2,19 +2,21 @@ package aej.dino.netflixcloneapps.ui.screen.detail
 
 import aej.dino.netflixcloneapps.core.data.MovieDatasource
 import aej.dino.netflixcloneapps.core.domain.model.Movie
+import aej.dino.netflixcloneapps.ui.component.ErrorUi
+import aej.dino.netflixcloneapps.ui.component.LoadingUi
 import aej.dino.netflixcloneapps.ui.component.MovieAppBar
+import aej.dino.netflixcloneapps.ui.component.VideoPlayer
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Favorite
-import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.Star
+import androidx.compose.material.icons.rounded.Stop
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -53,13 +55,16 @@ fun MovieDetailScreen(
     viewModel: MovieDetailViewModel = androidx.lifecycle.viewmodel.compose.viewModel(factory = MovieDetailViewModel.Factory),
 ) {
 
-    val movie by viewModel.movie.collectAsState()
+    val state by viewModel.movieDetailScreenState.collectAsState()
     val isMovieFavorite by viewModel.isFavorite.collectAsState()
     var isUpdateFavorite by remember { mutableStateOf(false) }
+    var isMoviePlaying by remember { mutableStateOf(false) }
 
     // initialize
     LaunchedEffect(Unit) {
+        viewModel.combineData()
         viewModel.getMovieDetail(movieId)
+        viewModel.getVideosFromMovie(movieId)
         viewModel.isMovieFavorite(movieId)
     }
 
@@ -70,111 +75,175 @@ fun MovieDetailScreen(
     }
 
     Scaffold(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        ConstraintLayout(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(it)
-                .background(Color.Black)
-        ) {
-            val (backdropRef, topBarRef, ratingRef, buttonRef, overviewRef) = createRefs()
-            movie?.let { movie ->
-                AsyncImage(
+        modifier = Modifier.fillMaxSize(),
+        containerColor = Color.Black
+    ) { contentPadding ->
+        when(state) {
+            is MovieDetailScreenState.Success -> {
+                val movie = (state as MovieDetailScreenState.Success).movieDetail
+                val video = (state as MovieDetailScreenState.Success).videos.results[0]
+
+                ConstraintLayout(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .constrainAs(backdropRef) {
+                        .fillMaxSize()
+                        .padding(contentPadding)
+                        .background(Color.Black)
+                ) {
+                    val (backdropRef, topBarRef, ratingRef, buttonRef, overviewRef, bgBackdropRef, videoPlayerRef, boxToolbarRef) = createRefs()
+                    AsyncImage(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .constrainAs(backdropRef) {
+                                top.linkTo(parent.top)
+                                start.linkTo(parent.start)
+                                end.linkTo(parent.end)
+                                width = Dimension.ratio("2:3")
+                                height = Dimension.fillToConstraints
+                            }
+                            .drawWithCache { createVerticalGradient(0, 5f) },
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(movie.backdropResourceId)
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = "",
+                        contentScale = ContentScale.Crop
+                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(86.dp)
+                            .drawWithCache { createVerticalGradient(1, 2f) }
+                            .constrainAs(boxToolbarRef) {
+                                start.linkTo(parent.start)
+                                end.linkTo(parent.end)
+                                top.linkTo(parent.top)
+                            }
+                    )
+                    if(isMoviePlaying) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .constrainAs(bgBackdropRef) {
+                                    start.linkTo(parent.start)
+                                    end.linkTo(parent.end)
+                                    top.linkTo(parent.top)
+                                    width = Dimension.ratio("2:3")
+                                    height = Dimension.fillToConstraints
+                                }
+                                .background(Color.Black)
+                        )
+                        VideoPlayer(
+                            videoId = video.key,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .constrainAs(videoPlayerRef) {
+                                    start.linkTo(parent.start)
+                                    end.linkTo(parent.end)
+                                    top.linkTo(boxToolbarRef.bottom)
+                                }
+                        )
+                    }
+                    Row(modifier = Modifier.constrainAs(ratingRef) {
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                        end.linkTo(parent.end)
+                        start.linkTo(parent.start)
+                    }, verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            imageVector = Icons.Rounded.Star,
+                            contentDescription = "",
+                            tint = Color.White
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(text = "${movie.rating}", style = TextStyle(color = Color.White))
+                    }
+                    Row(
+                        modifier = Modifier.constrainAs(buttonRef) {
+                            top.linkTo(ratingRef.bottom, 16.dp)
+                            end.linkTo(parent.end)
+                            start.linkTo(parent.start)
+                        },
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Button(
+                            onClick = {
+                                isMoviePlaying = !isMoviePlaying
+                            },
+                            colors = ButtonDefaults.buttonColors(containerColor = Color.White)
+                        ) {
+
+                            val icon = if(isMoviePlaying) Icons.Rounded.Stop else Icons.Rounded.PlayArrow
+                            val text = if(isMoviePlaying) "Stop" else "Play"
+
+                            Icon(
+                                imageVector = icon,
+                                contentDescription = "",
+                                tint = Color.Black
+                            )
+                            Text(text = text, style = TextStyle(color = Color.Black))
+                        }
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Box(
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(CircleShape)
+                                .background(Color.White)
+                                .clickable {
+                                    if (isMovieFavorite) viewModel.removeFromFavorite(movie)
+                                    else viewModel.addToFavorite(movie)
+                                    isUpdateFavorite = true
+                                },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = if (isMovieFavorite) Icons.Rounded.Favorite else Icons.Rounded.FavoriteBorder,
+                                contentDescription = "",
+                                tint = Color.Black
+                            )
+                        }
+                    }
+
+                    ContentOverView(
+                        modifier = Modifier.constrainAs(overviewRef) {
+                            top.linkTo(buttonRef.bottom, 24.dp)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                        },
+                        movie = movie
+                    )
+
+                    MovieAppBar(
+                        modifier = Modifier.constrainAs(topBarRef) {
                             top.linkTo(parent.top)
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
-                            width = Dimension.ratio("2:3")
-                            height = Dimension.fillToConstraints
-                        }
-                        .drawWithCache { createVerticalGradient(0, 5f) },
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(movie.backdropResourceId)
-                        .crossfade(true)
-                        .build(),
-                    contentDescription = "",
-                    contentScale = ContentScale.Crop
-                )
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(86.dp)
-                        .drawWithCache { createVerticalGradient(1, 2f) }
-                )
-                Row(modifier = Modifier.constrainAs(ratingRef) {
-                    top.linkTo(parent.top)
-                    bottom.linkTo(parent.bottom)
-                    end.linkTo(parent.end)
-                    start.linkTo(parent.start)
-                }, verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        imageVector = Icons.Rounded.Star,
-                        contentDescription = "",
-                        tint = Color.White
+                        },
+                        isTransparent = true, onBack = { navHostController.popBackStack() }
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(text = "${movie.rating}", style = TextStyle(color = Color.White))
                 }
-                Row(
-                    modifier = Modifier.constrainAs(buttonRef) {
-                        top.linkTo(ratingRef.bottom, 16.dp)
-                        end.linkTo(parent.end)
-                        start.linkTo(parent.start)
-                    },
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Button(
-                        onClick = { },
-                        colors = ButtonDefaults.buttonColors(containerColor = Color.White)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Rounded.PlayArrow,
-                            contentDescription = "",
-                            tint = Color.Black
-                        )
-                        Text(text = "Play", style = TextStyle(color = Color.Black))
-                    }
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Box(
-                        modifier = Modifier
-                            .size(40.dp)
-                            .clip(CircleShape)
-                            .background(Color.White)
-                            .clickable {
-                                if (isMovieFavorite) viewModel.removeFromFavorite(movie)
-                                else viewModel.addToFavorite(movie)
-                                isUpdateFavorite = true
-                            },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            imageVector = if (isMovieFavorite) Icons.Rounded.Favorite else Icons.Rounded.FavoriteBorder,
-                            contentDescription = "",
-                            tint = Color.Black
-                        )
-                    }
-                }
-
-                ContentOverView(
-                    modifier = Modifier.constrainAs(overviewRef) {
-                        top.linkTo(buttonRef.bottom, 24.dp)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                    },
-                    movie = movie
+            }
+            is MovieDetailScreenState.Loading -> {
+                LoadingUi(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(contentPadding)
                 )
             }
-            MovieAppBar(
-                modifier = Modifier.constrainAs(topBarRef) {
-                    top.linkTo(parent.top)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                },
-                isTransparent = true, onBack = { navHostController.popBackStack() }
-            )
+            is MovieDetailScreenState.Error -> {
+                val error = (state as MovieDetailScreenState.Error)
+                ErrorUi(message = error.message, onButtonClick = {
+                    when (error.whatError) {
+                        MovieDetailScreenRequestEnum.VIDEOS -> {
+                            viewModel.getVideosFromMovie(movieId)
+                        }
+
+                        MovieDetailScreenRequestEnum.DETAIL -> {
+                            viewModel.getMovieDetail(movieId)
+                        }
+                    }
+                })
+            }
+            else -> Unit
         }
     }
 }

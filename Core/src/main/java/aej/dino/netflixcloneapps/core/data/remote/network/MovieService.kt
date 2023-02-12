@@ -7,6 +7,7 @@ import aej.dino.netflixcloneapps.core.data.remote.response.LoginResponse
 import aej.dino.netflixcloneapps.core.data.remote.response.MovieResponse
 import aej.dino.netflixcloneapps.core.data.remote.response.RegisterResponse
 import aej.dino.netflixcloneapps.core.data.remote.response.UpdateResponse
+import aej.dino.netflixcloneapps.core.data.remote.response.VideosResponse
 import aej.dino.netflixcloneapps.core.data.remote.response.WebResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -34,6 +35,12 @@ interface MovieService {
         @Query("api_key") apiKey: String = "0a597bad68c0b95d5fab612cff9d8891",
         @Query("language") language: String = "en-US"
     ): ListMovieResponse
+
+    @GET("movie/{movieId}/videos")
+    suspend fun getVideosFromMovie(
+        @Path("movieId") movieId: String,
+        @Query("api_key") apiKey: String = "0a597bad68c0b95d5fab612cff9d8891"
+    ): VideosResponse
 
     @GET("movie/{movieId}")
     suspend fun getMovieDetail(

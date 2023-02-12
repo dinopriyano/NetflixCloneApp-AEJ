@@ -21,6 +21,10 @@ class AuthRepository(
         return remoteDataSource.login(loginRequest)
     }
 
+    override suspend fun logout() {
+        return localDataSource.logout()
+    }
+
     override suspend fun register(registerRequest: RegisterRequest): Flow<Resource<WebResponse<RegisterResponse>>> {
         return remoteDataSource.register(registerRequest)
     }

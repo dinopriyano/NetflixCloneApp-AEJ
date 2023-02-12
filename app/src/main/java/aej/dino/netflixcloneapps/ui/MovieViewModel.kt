@@ -9,8 +9,6 @@ import aej.dino.netflixcloneapps.core.presentation.base.BaseViewModel
 import aej.dino.netflixcloneapps.ui.screen.dashboard.home.HomeScreenRequestEnum
 import aej.dino.netflixcloneapps.ui.screen.dashboard.home.HomeScreenState
 import android.util.Log
-import android.widget.Toast
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
@@ -20,7 +18,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
@@ -115,6 +112,12 @@ class MovieViewModel constructor(
                 Log.d("TAG", "getCurrentUsername: $it")
                 _currentUsername.value = it
             }
+        }
+    }
+
+    fun logout() {
+        viewModelScope.launch {
+            authUseCase.logout()
         }
     }
 
