@@ -5,16 +5,17 @@ import aej.dino.netflixcloneapps.core.data.local.room.entity.UserEntity
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface UserDao {
 
-  @Query("SELECT * FROM user WHERE email = :email AND password = :password")
-  fun getUserByEmailAndPassword(email: String, password: String): Flow<List<UserEntity>>
+  @Query("SELECT * FROM user WHERE email = :email AND id = :id")
+  fun getUserByEmailAndId(email: String, id: String): Flow<UserEntity>
 
-  @Insert
+  @Insert(onConflict = OnConflictStrategy.REPLACE)
   suspend fun storeUser(userEntity: UserEntity)
 
   @Insert

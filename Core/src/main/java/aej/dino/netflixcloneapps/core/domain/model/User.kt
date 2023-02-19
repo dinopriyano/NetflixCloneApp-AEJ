@@ -5,11 +5,15 @@ import aej.dino.netflixcloneapps.core.data.local.room.entity.UserEntity
 data class User(
   val name: String,
   val email: String,
-  val password: String
+  val id: String,
+  val gender: Int,
+  val birthDate: String
 )
 
 fun User.toUserEntity() = UserEntity(
   this.name,
   this.email,
-  this.password
+  this.id,
+  this.gender,
+  this.birthDate
 )

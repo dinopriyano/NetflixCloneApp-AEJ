@@ -3,6 +3,7 @@ package aej.dino.netflixcloneapps.core.data.remote
 import aej.dino.netflixcloneapps.core.data.remote.network.MovieService
 import aej.dino.netflixcloneapps.core.data.remote.request.LoginRequest
 import aej.dino.netflixcloneapps.core.data.remote.request.RegisterRequest
+import aej.dino.netflixcloneapps.core.data.remote.request.UpdateUserRequest
 import aej.dino.netflixcloneapps.core.data.remote.response.toListMovie
 import aej.dino.netflixcloneapps.core.data.remote.response.toMovie
 import aej.dino.netflixcloneapps.core.data.remote.response.toVideos
@@ -45,4 +46,9 @@ class RemoteDataSource(
     suspend fun login(loginRequest: LoginRequest) = flow {
         emit(safeApiCall { movieService.login(loginRequest) })
     }
+
+    suspend fun updateUser(updateUserRequest: UpdateUserRequest, token: String) = flow {
+        emit(safeApiCall { movieService.updateUser(token, updateUserRequest) })
+    }
+
 }

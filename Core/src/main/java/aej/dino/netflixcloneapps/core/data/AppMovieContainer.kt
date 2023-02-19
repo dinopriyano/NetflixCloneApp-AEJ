@@ -7,6 +7,7 @@ import aej.dino.netflixcloneapps.core.data.remote.RemoteDataSource
 import aej.dino.netflixcloneapps.core.data.remote.network.MovieService
 import aej.dino.netflixcloneapps.core.domain.usecase.AuthUseCase
 import aej.dino.netflixcloneapps.core.domain.usecase.MovieUseCase
+import aej.dino.netflixcloneapps.core.domain.usecase.UserUseCase
 import android.content.Context
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -18,8 +19,10 @@ interface AppMovieContainer {
     val movieRepository: MovieRepository
     val localDataSource: LocalDataSource
     val authRepository: AuthRepository
+    val userRepository: UserRepository
     val movieUseCase: MovieUseCase
     val authUseCase: AuthUseCase
+    val userUseCase: UserUseCase
 }
 
 class DefaultAppMovieContainer(
@@ -74,8 +77,12 @@ class DefaultAppMovieContainer(
 
     override val authRepository: AuthRepository by lazy { AuthRepository(localDataSource, remoteDataSource) }
 
+    override val userRepository: UserRepository by lazy { UserRepository(localDataSource, remoteDataSource) }
+
     override val movieUseCase: MovieUseCase by lazy { MovieUseCase(movieRepository) }
 
     override val authUseCase: AuthUseCase by lazy { AuthUseCase(authRepository) }
+
+    override val userUseCase: UserUseCase by lazy { UserUseCase(userRepository) }
 
 }

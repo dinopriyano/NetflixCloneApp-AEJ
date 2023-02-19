@@ -1,6 +1,7 @@
 package aej.dino.netflixcloneapps.ui.screen.auth.login
 
 import aej.dino.netflixcloneapps.R
+import aej.dino.netflixcloneapps.core.domain.model.User
 import aej.dino.netflixcloneapps.ui.Routers
 import aej.dino.netflixcloneapps.ui.component.GhostButton
 import aej.dino.netflixcloneapps.ui.component.MovieAppBar
@@ -8,7 +9,6 @@ import aej.dino.netflixcloneapps.ui.component.OutlineButton
 import aej.dino.netflixcloneapps.ui.component.TextFieldEmail
 import aej.dino.netflixcloneapps.ui.component.TextFieldPassword
 import aej.dino.netflixcloneapps.ui.screen.auth.AuthViewModel
-import aej.dino.netflixcloneapps.ui.screen.auth.register.RegisterScreenState
 import aej.dino.netflixcloneapps.ui.theme.NetflixCloneAppsTheme
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -45,21 +45,40 @@ fun LoginScreen(
     var password by rememberSaveable { mutableStateOf("") }
 
     val userLoginResponse by viewModel.loginScreenState.collectAsState()
+    val storeUserResponse by viewModel.userStoreResponse.collectAsState()
     val context = LocalContext.current
 
     LaunchedEffect(userLoginResponse) {
         when(userLoginResponse) {
             is LoginScreenState.Success -> {
                 (userLoginResponse as LoginScreenState.Success).user.let { user ->
-                    viewModel.storeToken(user.token)
-                    viewModel.storeUsername(user.user.username)
+                    with(user) {
+                        viewModel.storeToken(this.token)
+                        viewModel.storeUsername(this.user.username)
+                        viewModel.storeEmail(this.user.email)
+                        viewModel.storeId(this.user.id.toString())
+                        viewModel.storeUser(
+                            User(
+                                this.user.username,
+                                this.user.email,
+                                this.user.id.toString(),
+                                this.user.gender,
+                                this.user.birthdate
+                            )
+                        )
+                    }
                 }
-                navHostController.navigate(Routers.HOME)
             }
             is LoginScreenState.Error -> {
                 Toast.makeText(context, (userLoginResponse as LoginScreenState.Error).message, Toast.LENGTH_SHORT).show()
             }
             else -> Unit
+        }
+    }
+
+    LaunchedEffect(storeUserResponse) {
+        if(storeUserResponse) {
+            navHostController.navigate(Routers.HOME)
         }
     }
 

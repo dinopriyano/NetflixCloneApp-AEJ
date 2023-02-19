@@ -25,12 +25,24 @@ class MovieDataStore constructor(
         context.dataStore.edit { preferences ->
             preferences.remove(USERNAME)
             preferences.remove(TOKEN)
+            preferences.remove(EMAIL)
+            preferences.remove(ID)
         }
     }
 
     val username: Flow<String>
         get() = context.dataStore.data.map { preferences ->
-            preferences[USERNAME] ?: ""
+            preferences[USERNAME] ?: "tes"
+        }
+
+    val email: Flow<String>
+        get() = context.dataStore.data.map { preferences ->
+            preferences[EMAIL] ?: ""
+        }
+
+    val id: Flow<String>
+        get() = context.dataStore.data.map { preferences ->
+            preferences[ID] ?: ""
         }
 
     val token: Flow<String>
@@ -38,6 +50,8 @@ class MovieDataStore constructor(
 
     companion object {
         val USERNAME = stringPreferencesKey("USERNAME")
+        val EMAIL = stringPreferencesKey("EMAIL")
+        val ID = stringPreferencesKey("ID")
         val TOKEN = stringPreferencesKey("TOKEN")
     }
 

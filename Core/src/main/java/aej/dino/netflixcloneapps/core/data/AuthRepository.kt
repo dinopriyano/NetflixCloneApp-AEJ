@@ -37,12 +37,32 @@ class AuthRepository(
         return localDataSource.getCurrentUsername()
     }
 
+    override suspend fun getCurrentEmail(): Flow<String> {
+        return localDataSource.getCurrentEmail()
+    }
+
+    override suspend fun getCurrentId(): Flow<String> {
+        return localDataSource.getCurrentId()
+    }
+
     override suspend fun storeUsername(email: String) {
         localDataSource.storeUsername(email)
     }
 
+    override suspend fun storeEmail(email: String) {
+        localDataSource.storeEmail(email)
+    }
+
+    override suspend fun storeId(id: String) {
+        localDataSource.storeId(id)
+    }
+
     override suspend fun storeToken(token: String) {
         localDataSource.storeToken(token)
+    }
+
+    override suspend fun getToken(): Flow<String> {
+        return localDataSource.getCurrentToken()
     }
 
 

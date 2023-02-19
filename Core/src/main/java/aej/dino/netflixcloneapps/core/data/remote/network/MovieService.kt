@@ -2,6 +2,7 @@ package aej.dino.netflixcloneapps.core.data.remote.network
 
 import aej.dino.netflixcloneapps.core.data.remote.request.LoginRequest
 import aej.dino.netflixcloneapps.core.data.remote.request.RegisterRequest
+import aej.dino.netflixcloneapps.core.data.remote.request.UpdateUserRequest
 import aej.dino.netflixcloneapps.core.data.remote.response.ListMovieResponse
 import aej.dino.netflixcloneapps.core.data.remote.response.LoginResponse
 import aej.dino.netflixcloneapps.core.data.remote.response.MovieResponse
@@ -11,6 +12,7 @@ import aej.dino.netflixcloneapps.core.data.remote.response.VideosResponse
 import aej.dino.netflixcloneapps.core.data.remote.response.WebResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
@@ -60,7 +62,8 @@ interface MovieService {
 
     @PUT("v1/user")
     suspend fun updateUser(
-        @Body register: RegisterRequest
+        @Header("Authorization") token: String,
+        @Body updateUserRequest: UpdateUserRequest
     ): WebResponse<UpdateResponse>
 
 }

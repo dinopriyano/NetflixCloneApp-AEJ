@@ -1,14 +1,15 @@
 package aej.dino.netflixcloneapps.ui.screen.auth
 
 import aej.dino.netflixcloneapps.MovieApplication
-import aej.dino.netflixcloneapps.core.data.AuthRepository
 import aej.dino.netflixcloneapps.core.data.remote.Resource
 import aej.dino.netflixcloneapps.core.data.remote.request.LoginRequest
 import aej.dino.netflixcloneapps.core.data.remote.request.RegisterRequest
+import aej.dino.netflixcloneapps.core.domain.model.User
 import aej.dino.netflixcloneapps.core.domain.usecase.AuthUseCase
+import aej.dino.netflixcloneapps.core.domain.usecase.UserUseCase
+import aej.dino.netflixcloneapps.core.presentation.base.BaseViewModel
 import aej.dino.netflixcloneapps.ui.screen.auth.login.LoginScreenState
 import aej.dino.netflixcloneapps.ui.screen.auth.register.RegisterScreenState
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
@@ -18,8 +19,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class AuthViewModel(
-    private val authUseCase: AuthUseCase
-) : ViewModel() {
+    private val authUseCase: AuthUseCase,
+    private val userUseCase: UserUseCase
+) : BaseViewModel() {
 
     val registerRequest = MutableStateFlow<RegisterRequest>(RegisterRequest())
 
@@ -29,13 +31,15 @@ class AuthViewModel(
     private val _registerScreenState =
         MutableStateFlow<RegisterScreenState>(RegisterScreenState.Empty)
     val registerScreenState: StateFlow<RegisterScreenState> get() = _registerScreenState
+    private val _userStoreResponse = MutableStateFlow<Boolean>(false)
+    val userStoreResponse: StateFlow<Boolean> get() = _userStoreResponse
 
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 val application =
                     (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as MovieApplication)
-                AuthViewModel(application.appMovieContainer.authUseCase)
+                AuthViewModel(application.appMovieContainer.authUseCase, application.appMovieContainer.userUseCase)
             }
         }
     }
@@ -77,9 +81,27 @@ class AuthViewModel(
         }
     }
 
+    fun storeUser(user: User) {
+        viewModelScope.launch {
+            userUseCase.storeUser(user).runFlow(_userStoreResponse)
+        }
+    }
+
     fun storeUsername(email: String) {
         viewModelScope.launch {
             authUseCase.storeUsername(email)
+        }
+    }
+
+    fun storeEmail(email: String) {
+        viewModelScope.launch {
+            authUseCase.storeEmail(email)
+        }
+    }
+
+    fun storeId(id: String) {
+        viewModelScope.launch {
+            authUseCase.storeId(id)
         }
     }
 
